@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERONICA-Your personal Voice assistant!</title>
+</head>
+<link rel="stylesheet" href="style2.css">
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" charset="UTF-8"></script>
+
+<body>
+ <header>
+      <nav>
+         <div class="logo"><a href = "verhome.html"><img src="images/1x//1x/Logo1-8.png" alt=""></a></div>
+         <div class="navlinks">
+             <ul>
+                 <li class  = "curvedbg"><a  href="verhome.html">HOME</a></li>
+                 <li class = "curvedbg"><a  href="about.html">ABOUT</a></li>
+                 <li><a class = "settings" onclick="toggleSettings()"><img src = "images/1x/settings-8.png"></a></li>
+              </ul>
+          </div>
+      </nav>
+ </header>
+ <div class="bg">
+    <div class="tagline">
+        Veronica: Your Voice, Our Intelligence - A Seamless Symphony of Assistance.
+    </div>
+    <div class="info">Veronica is an advanced virtual assistant designed to provide users with quick and efficient solutions to their problems. She is powered by state-of-the-art artificial intelligence that allows her to understand natural language and respond accordingly. With Veronica's vast database and wide range of features, including task automation and reminders, users can save valuable time while she helps them organize and prioritize tasks, and answers important queries instantly.Overall, Veronica is the ideal digital companion for people seeking personal and professional efficiency and effectiveness in today's fast-paced world.</div>
+ </div>
+ <div class="team">Our team</div>
+ <div class="row">
+    <div class="col1">
+        <h2>Soham Mhetre</h2>
+        <p>LinkedIn</p>
+        <div class="circle"></div>
+    </div>
+    <div class="col1">
+        <h2>Siddharth Nale</h2>
+        <p>LinkedIn</p>
+        <div class="circle"></div>
+    </div>
+    <div class="col1">
+        <h2>Adnan Ahtas</h2>
+        <p>LinkedIn</p>
+        <div class="circle"></div>
+    </div>
+    <div class="col1">
+        <h2>Malhar Borse</h2>
+        <p>LinkedIn</p>
+        <div class="circle"></div>
+    </div>
+</div>
+
+ <div class="settings-window" id="settingsWindow">
+    <div class="menu">
+        <div class="item" id="one"><a href="#">Microphone Settings</a></div>
+        <div class = "line"></div>
+        <div class="censor"><a href="#">Censorship</a> 
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggleBtn">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class = "line"></div>
+        <div class="item" id="three" ><a href="#">FAQ</a></div>
+    </div>
+ </div>
+ <script>
+    function toggleSettings() {
+        var settingsWindow = document.getElementById('settingsWindow');
+        settingsWindow.classList.toggle('show-settings');
+    }
+
+    function closeSettings() {
+        var settingsWindow = document.getElementById('settingsWindow');
+        settingsWindow.classList.remove('show-settings');
+    }
+</script>
+</body>
+</html>
