@@ -248,11 +248,9 @@ input:checked + .slider:before {
 }
 .role {
   font-size: 15px;
-  font-weight: 500;
-  text-decoration: none;
   display: block;
-  line-height: 30px;
-  color: #3498db;
+
+  color: #fff;
   width:100%;
 } 
 .role h4{
@@ -263,9 +261,8 @@ input:checked + .slider:before {
 background-color: #0E111A;
 }
 .head{
-  color:#1189CC;
+  color:#fff;
   text-align: center;
-  font-weight:500;
   padding-top: 10px;
-  font-size: 20px;
+  font-size: 34px;
 }
