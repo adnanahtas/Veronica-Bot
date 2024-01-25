@@ -10,12 +10,34 @@
     left: 00;
     z-index: -1; /* Move the background behind other elements */
 }
+html::-webkit-scrollbar {
+  width: 12px; /* Set the width of the scrollbar */
+}
+
+/* Handle on hover */
+html::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Set the color of the scrollbar */
+html::-webkit-scrollbar-thumb {
+  background: #4d4d4d;
+}
+
+
+/* Set the border-radius of the scrollbar */
+html::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  margin:4px 4px;
+}
+
+/* Set the border-radius of the scrollbar track */
+
 *{
     font-family: 'poppins';
   }
   
   body{
-   
     /* background-image:url(images/bgimage2.jpg); */
     background-size : cover;
     background-repeat: no-repeat;
@@ -314,7 +336,7 @@ background-color: #0E111A;
     margin-top: 740px;
     margin-bottom: 50px;
   }
-  .col1{
+.col1{
     flex-basis: 25%;
     border-radius: 20px;
     margin-left: 20px;
@@ -331,10 +353,10 @@ background-color: #0E111A;
   /* .col1:hover{
     box-shadow: 0 0 20px 0px rgb(255, 252, 252);
   } */
-   h2,p {
+h2,p {
      color: antiquewhite
   }
-  .team{
+.team{
     position: absolute;
     top: 690px;
     left: 50%;

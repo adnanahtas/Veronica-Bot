@@ -1,10 +1,11 @@
+html{
+  overflow: hidden;
+}
 *{
     font-family: 'poppins';
   }
   
-  body{
-   
-    /* background-image:url(images/bgimage2.jpg); */
+body{
     background-size : cover;
     background-repeat: no-repeat;
     position:static;
@@ -12,7 +13,7 @@
     background-position: center;
     background-color: #0E111A; 
   } 
-  nav{
+nav{
     display: flex; 
     padding: 1% 6%; 
     justify-content: space-between;
@@ -22,33 +23,31 @@
     position: fixed;
     top: 0;
     background-color: white; 
-    
-   
   }
-  .logo img{
+.logo img{
     padding-top: 20px;
     padding-bottom: 10px;
     padding-left: 20px;
     width: 60%;
     height:auto;
   }
-  .navlinks{
+.navlinks{
     flex: 1;
     text-align: right;
     font-weight: 1000;
    
   }
-  .navlinks ul li{
+.navlinks ul li{
     list-style: none;
     display: inline-block;
     padding: 20px 10px;
     position: relative;
     vertical-align: middle; 
   }
-  .navlinks ul li.curvedbg{
+.navlinks ul li.curvedbg{
     padding-bottom: 20px;
   }
-  .navlinks ul li::after{ 
+.navlinks ul li::after{ 
     content: '';
     width: 0%;
     height: 2px;
@@ -56,14 +55,10 @@
     display: block;
     margin: auto;
     transition:0.12s;
-  
-    
   }
-    .navlinks ul li.curvedbg:hover::after{
+.navlinks ul li.curvedbg:hover::after{
     width: 100% ;
   }
-  
-  
   div a{
     font-size: 18px;
   }
@@ -91,7 +86,35 @@
     text-align: center;
     z-index: 2;
   }
+ .maintext {
+    position: fixed;
+    width: 85%;
+    height :65%;
+    text-align: justify;
+    z-index: 2;
+    margin-left: 75px;
+    margin-right: 20px;
+    color:#ccc;
+    padding: 10px 10px;
+    overflow: auto;
 
+  }
+  .maintext::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .maintext::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+
+  .maintext::-webkit-scrollbar-thumb {
+    background: #4d4d4d;
+  }
+.maintext::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    padding:4px 4px;
+  }
 .roles{
   position :fixed;
   right:0px;
@@ -101,36 +124,33 @@
   
   background-color: #0A0B10;
 }
-
-
-  body, nav {
+body, nav {
     margin: 0;
     padding: 0;
   }
-  .settings {
+.settings {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     color: #fff;
-    /* font-size: 16px;  */
     border: none;
     cursor: pointer;
     outline: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease; /* Added a transition for smooth effect */
+    transition: background-color 0.3s ease; 
   }
-  .settings:hover {
-    background-color: #3498db; /* Background circle color on hover */
+.settings:hover {
+    background-color: #3498db; 
     border-radius: 50%;
   }
-  .settings img {
+.settings img {
     align-self: center;
-    width: 80%; /* Adjust the size of the icon within the button */
-    height: auto; /* Maintain aspect ratio */
+    width: 80%;  
+    height: auto; 
   }
-  .settings-window {
+.settings-window {
     position: fixed;
     width : 250px;
     height:75vh;
@@ -142,6 +162,7 @@
     display: none;
     transition: opacity 0.3s ease;
     border-radius: 10px;
+    z-index: 10;
 }
 .settings-window h2 {
     margin-bottom: 10px;
@@ -155,7 +176,6 @@
 }
 .settings-window .menu .item{
     position: relative;
-    /* margin-top: 10px; */
     cursor: pointer; 
 }
 .settings-window .menu .item a {
@@ -265,4 +285,89 @@ background-color: #0E111A;
   text-align: center;
   padding-top: 10px;
   font-size: 34px;
+}
+.roles {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #fff;
+    margin: 60px 10px;
+    background-color: #0E111A;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
+.roles:hover {
+    background-color: #3498db;
+    border-radius: 50%;
+  }
+.roles img {
+    align-self: center;
+    width: 50%; 
+    height: auto; 
+  }
+.roles-window {
+    position: fixed;
+    width : 350px;
+    height:80vh;
+    overflow-y: auto;
+    top:100px ;
+    right:0px;
+    background-color: #0A0B10;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    display: none;
+    transition: opacity 0.3s ease;
+    border-radius: 10px;
+    z-index: 10;
+}
+.roles-window h2 {
+    margin-bottom: 10px;
+}
+.roles-window.show-roles {
+    display: block;
+    opacity: 1;
+}
+.roles-window .menu {
+    width:100%;
+}
+.roles-window .menu .item{
+    position: relative;
+    cursor: pointer; 
+    padding-top: 10px;
+}
+.roles-window .menu .item a {
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    display: block;
+    padding:5px 30px;
+    line-height: 30px;
+    color:#fff
+} 
+
+.roles-window .menu .item :hover{
+  background-color: #3498db;
+}
+.roles-window .menu .item .selectrole{
+  background-color: #0E111A;
+}
+.menu .btn{
+  display: inline-block;
+  color:#fff;
+  border-radius: 20px;
+  border: 2px solid #fff;
+  padding:12px 34px;
+  margin-top: 70%;
+  margin-left: 95px;
+  align-self: center;
+  font-size: 16px;
+  background: transparent;
+  position: relative;
+}
+.menu .btn:hover{
+  cursor: pointer;
 }
