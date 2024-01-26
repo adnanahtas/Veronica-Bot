@@ -19,7 +19,8 @@
                  <li class = "curvedbg"><a  href="about">ABOUT</a></li>
                  <li class = "curvedbg" ><a onclick="bkend('this is a prompt')">Test</a></li>
                  <li><a class = "settings" onclick="toggleSettings()"><img src = "{{ url_for('static', filename='settings-8.png')}}"></a></li>
-              </ul>
+                 <li><button id="recordButton">Start Recording</button></li>
+                </ul>
           </div>
       </nav>
  </header>
@@ -34,6 +35,7 @@
         <button class="btn">+ Add Roles</button>
     </div>
  </div>
+ 
  <div class="settings-window" id="settingsWindow">
     <div class="menu">
         <div class="item" id="one"><a href="#">Microphone Settings</a></div>
@@ -73,7 +75,31 @@
         console.log(this_data);
 
     }
+    $(document).ready(function() {
+            var recording = false;
 
+            $('#recordButton').click(function() {
+                if (!recording) {
+                    $.ajax({
+                        url: '/toggle-recording',
+                        type: 'POST',
+                        success: function(response) {
+                            $('#recordButton').text('Stop Recording');
+                            recording = true;
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: '/toggle-recording',
+                        type: 'POST',
+                        success: function(response) {
+                            $('#recordButton').text('Start Recording');
+                            recording = false;
+                        }
+                    });
+                }
+            });
+        });
 </script>
 </body>
 </html>
