@@ -328,7 +328,7 @@ background-color: #0E111A;
     text-align: center;
     max-width: 100%;
     width:70%;
-    padding:20px 20px
+    padding:20px 20px;
 }
 .row{
     display:flex;
@@ -350,9 +350,6 @@ background-color: #0E111A;
       
     
   }
-  /* .col1:hover{
-    box-shadow: 0 0 20px 0px rgb(255, 252, 252);
-  } */
 h2,p {
      color: antiquewhite
   }

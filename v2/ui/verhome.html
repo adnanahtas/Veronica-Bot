@@ -19,28 +19,29 @@
                  <li class = "curvedbg"><a  href="about">ABOUT</a></li>
                  <li class = "curvedbg" ><a onclick="bkend('this is a prompt')">Test</a></li>
                  <li><a class = "settings" onclick="toggleSettings()"><img src = "{{ url_for('static', filename='settings-8.png')}}"></a></li>
-                 <li><button id="recordButton">Start Recording</button></li>
+                 
                 </ul>
           </div>
       </nav>
  </header>
  <a class="roles" onclick="toggleRoles()"><img src="{{ url_for('static', filename='Asset 5-8.png')}}" alt=""></a>
  <div class="text"><div id="response" class="maintext">Lorem ipsum dolor sit amet.</div></div>
+ <button id="moveButton" onclick="moveButton()"></button>
+ <div class="textbox"><input type="text" placeholder="Message Veronica"></div>
  <div class="roles-window" id="rolesWindow">
     <div class="menu">
         <div class="item" onclick="selectRole('Professor')" ><a href="#">Professor</a></div>
         <div class="item" onclick="selectRole('Therapist')"><a href="#">Therapist</a></div>
         <div class="item" onclick="selectRole('Legal Advisor')"><a href="#">Legal Advisor</a></div>
         <div class="item" onclick="selectRole('Nutritionist')"><a href="#">Nutritionist</a></div>
-        <button class="btn">+ Add Roles</button>
+        <button class="btn" onclick="openRolesWindow()">+ Add Roles</button>
     </div>
  </div>
- 
  <div class="settings-window" id="settingsWindow">
     <div class="menu">
         <div class="item" id="one"><a href="#">Microphone Settings</a></div>
         <div class = "line"></div>
-        <div class="censor"><a href="#">Censorship</a> 
+        <div class="censor"><a>Censorship</a> 
             <label class="toggle-switch">
                 <input type="checkbox" id="toggleBtn">
                 <span class="slider"></span>
@@ -50,41 +51,93 @@
         <div class="item" id="three" ><a href="#">FAQ</a></div>
     </div>
  </div>
- <script>
-    function toggleSettings() {
-        var settingsWindow = document.getElementById('settingsWindow');
-        settingsWindow.classList.toggle('show-settings');
-    }
+ <div class="add-roles-window" id="addrolesWindow">
+    <input type="text" id="roleInput" placeholder="Enter role name">
+    <button  class = "add" onclick="addCustomRole()">Add</button>
+    <button class = "cancel" onclick="closeCustomRole()">Cancel</button>
+ </div>
 
-    function closeSettings() {
-        var settingsWindow = document.getElementById('settingsWindow');
-        settingsWindow.classList.remove('show-settings');
-    }
+
+<script>
+    function toggleSettings() {
+            var settingsWindow = document.getElementById('settingsWindow');
+            settingsWindow.classList.toggle('show-settings');
+        }
+
+        function closeSettings() {
+            var settingsWindow = document.getElementById('settingsWindow');
+            settingsWindow.classList.remove('show-settings');
+        }
     function toggleRoles() {
-        var rolesWindow = document.getElementById('rolesWindow');
-        rolesWindow.classList.toggle('show-roles');
-    }
+            var rolesWindow = document.getElementById('rolesWindow');
+            rolesWindow.classList.toggle('show-roles');
+        }
     function selectRole(role) {
-            selectedRole = role;
-            toggleRoles();
+                selectedRole = role;
+                toggleRoles();
+            }
+    function openRolesWindow() {
+        var addRolesWindow = document.getElementById('addrolesWindow');
+        addRolesWindow.style.display = 'block';
+    }
+    function addCustomRole() {
+        var roleInput = document.getElementById('roleInput');
+        var roleName = roleInput.value.trim();
+
+        if (roleName !== '') {
+            // Create a new role element
+            var newRole = document.createElement('div');
+            newRole.classList.add('item');
+            newRole.innerHTML = '<a href="#" onclick="selectRole(\'' + roleName + '\')">' + roleName + '</a>';
+
+            var addRolesButton = document.querySelector('.roles-window .menu .btn');
+
+            // Insert the new role before the addRolesButton
+            addRolesButton.parentNode.insertBefore(newRole, addRolesButton);
+
+            // Clear the input field
+            roleInput.value = '';
+
+            // Close the add-roles-window
+            var addRolesWindow = document.getElementById('addrolesWindow');
+            addRolesWindow.style.display = 'none';
         }
     
-    function bkend(data)
-    {
-        this_data = data;
-        console.log(this_data);
-
     }
+    function closeCustomRole()
+        {
+            var addRolesWindow = document.getElementById('addrolesWindow');
+            addRolesWindow.style.display = 'none';
+        }
+
+
+    function moveButton() {
+        var button = document.getElementById('moveButton');
+        var inputbox = document.querySelector('.textbox');
+        var maintext = document.querySelector('.maintext');
+        button.classList.add('moved');
+        inputbox.classList.add('show');
+        maintext.classList.add('showtext');
+        if(button.classList.contains('start'))
+        {
+            button.classList.remove('start');
+            button.classList.add('stop');
+        }
+        else{
+            button.classList.remove('stop');
+            button.classList.add('start');
+        }
+    }   
     $(document).ready(function() {
             var recording = false;
 
-            $('#recordButton').click(function() {
+            $('#moveButton').click(function() {
                 if (!recording) {
                     $.ajax({
                         url: '/toggle-recording',
                         type: 'POST',
                         success: function(response) {
-                            $('#recordButton').text('Stop Recording');
+                            // $('#moveButton').text('Stop Recording');
                             recording = true;
                         }
                     });
@@ -93,14 +146,15 @@
                         url: '/toggle-recording',
                         type: 'POST',
                         success: function(response) {
-                            $('#recordButton').text('Start Recording');
+                            // $('#moveButton').text('Start Recording');
                             recording = false;
-                            $('#response').text(response.transcription)
+                            $('#response').text(response.transcription);
                         }
                     });
                 }
             });
         });
+
 </script>
 </body>
 </html>

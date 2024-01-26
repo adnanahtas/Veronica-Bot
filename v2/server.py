@@ -15,18 +15,18 @@ stream = None
 recording = False
 frames = []
 
+
 def veronica_prompt(inp_role, inpt_prompt):
     t = time.time()
     role = inp_role
     question = inpt_prompt
 
-    config = AutoConfig.from_pretrained("TheBloke/Mistral-7B-OpenOrca-GGUF")
+    config = AutoConfig.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.2-GGUF")
     config.config.gpu_layers = 50
-    config.config.mlock = True
     config.config.context_length = 4096
     config.config.batch_size = 16
     config.config.max_new_tokens = 8192
-    llm = AutoModelForCausalLM.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.1-GGUF", model_file="mistral-7b-instruct-v0.1.Q5_K_M.gguf", model_type="mistral", config=config)
+    llm = AutoModelForCausalLM.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.2-GGUF", model_file="mistral-7b-instruct-v0.2.Q5_K_M.gguf", model_type="mistral", config=config)
 
     prompt = f"<s>[INST]You are a {role} named Veronica. You will respond in a way that is most natural and relevant for a {role}, while making sure to follow any specific instructions given to you[/INST]Sure, I will now respond to the conversation as if I am a {role} and my answers will be context relevant and related to my role of being a {role}</s>[INST]{question}[/INST]"
     response = llm(prompt)
@@ -35,15 +35,16 @@ def veronica_prompt(inp_role, inpt_prompt):
     print("Time = ", t)
     return response
 
+
 def record_audio():
     global stream, frames
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
-    RATE = 34100
+    RATE = 44100
 
     stream = audio.open(format=FORMAT, channels=CHANNELS,
-                        rate=RATE, input=True,input_device_index = 3,
+                        rate=RATE, input=True,input_device_index = 1,
                         frames_per_buffer=CHUNK)
     while recording:
         data = stream.read(CHUNK)
@@ -52,6 +53,7 @@ def record_audio():
 @app.route('/toggle-recording', methods=['POST'])
 def toggle_recording():
     global recording
+    transcription = ""
     if not recording:
         recording = True
         audio_thread = threading.Thread(target=record_audio)
@@ -71,7 +73,7 @@ def toggle_recording():
         model = whisper.load_model("base")
         transcription = whisper.transcribe(model, '11audio.wav')
         print(transcription["text"])
-    response = veronica_prompt("Threapist", transcription)
+    response = veronica_prompt("Personal Assistant", transcription)
 
     return jsonify({'success': True, 'response':response})
 
