@@ -5,46 +5,54 @@ import whisper
 import pyaudio
 import wave
 import os
+import threading
 
 app = Flask(__name__, template_folder="ui")
 
-audio_file = 'audio.wav'
+audio_file = '11audio.wav'
 audio = pyaudio.PyAudio()
 stream = None
 recording = False
+frames = []
+
+def record_audio():
+    global stream, frames
+    CHUNK = 1024
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 44100
+
+    stream = audio.open(format=FORMAT, channels=CHANNELS,
+                        rate=RATE, input=True,
+                        frames_per_buffer=CHUNK)
+    while recording:
+        data = stream.read(CHUNK)
+        frames.append(data)
 
 @app.route('/toggle-recording', methods=['POST'])
 def toggle_recording():
-    global stream, recording
+    global recording
     if not recording:
-        CHUNK = 1024
-        FORMAT = pyaudio.paInt16
-        CHANNELS = 1
-        RATE = 44100
-
-        stream = audio.open(format=FORMAT, channels=CHANNELS,
-                            rate=RATE, input=True,
-                            frames_per_buffer=CHUNK)
         recording = True
+        audio_thread = threading.Thread(target=record_audio)
+        audio_thread.start()
     else:
-        data = stream.read(1024)
+        global stream, frames
+        recording = False
         stream.stop_stream()
         stream.close()
         stream = None
-        recording = False
         wf = wave.open(audio_file, 'wb')
         wf.setnchannels(1)
         wf.setsampwidth(audio.get_sample_size(pyaudio.paInt16))
         wf.setframerate(44100)
-        wf.writeframes(b''.join([data]))
+        wf.writeframes(b''.join(frames))
         wf.close()
         model = whisper.load_model("base")
         transcription = whisper.transcribe(model, 'audio.wav')
         print(transcription["text"])
 
     return jsonify({'success': True})
-
-
 def veronica_prompt(inp_role, inpt_prompt):
     t = time.time()
     role = inp_role
