@@ -15,15 +15,35 @@ stream = None
 recording = False
 frames = []
 
+def veronica_prompt(inp_role, inpt_prompt):
+    t = time.time()
+    role = inp_role
+    question = inpt_prompt
+
+    config = AutoConfig.from_pretrained("TheBloke/Mistral-7B-OpenOrca-GGUF")
+    config.config.gpu_layers = 50
+    config.config.mlock = True
+    config.config.context_length = 4096
+    config.config.batch_size = 16
+    config.config.max_new_tokens = 8192
+    llm = AutoModelForCausalLM.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.1-GGUF", model_file="mistral-7b-instruct-v0.1.Q5_K_M.gguf", model_type="mistral", config=config)
+
+    prompt = f"<s>[INST]You are a {role} named Veronica. You will respond in a way that is most natural and relevant for a {role}, while making sure to follow any specific instructions given to you[/INST]Sure, I will now respond to the conversation as if I am a {role} and my answers will be context relevant and related to my role of being a {role}</s>[INST]{question}[/INST]"
+    response = llm(prompt)
+    print(response)
+    t = time.time() - t
+    print("Time = ", t)
+    return response
+
 def record_audio():
     global stream, frames
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
-    RATE = 44100
+    RATE = 34100
 
     stream = audio.open(format=FORMAT, channels=CHANNELS,
-                        rate=RATE, input=True,
+                        rate=RATE, input=True,input_device_index = 3,
                         frames_per_buffer=CHUNK)
     while recording:
         data = stream.read(CHUNK)
@@ -49,33 +69,12 @@ def toggle_recording():
         wf.writeframes(b''.join(frames))
         wf.close()
         model = whisper.load_model("base")
-        transcription = whisper.transcribe(model, 'audio.wav')
+        transcription = whisper.transcribe(model, '11audio.wav')
         print(transcription["text"])
+    response = veronica_prompt("Threapist", transcription)
 
-    return jsonify({'success': True})
-def veronica_prompt(inp_role, inpt_prompt):
-    t = time.time()
-    role = inp_role
-    question = inpt_prompt
+    return jsonify({'success': True, 'response':response})
 
-    config = AutoConfig.from_pretrained("TheBloke/Mistral-7B-OpenOrca-GGUF")
-    config.config.gpu_layers = 50
-    config.config.mlock = True
-    config.config.context_length = 4096
-    config.config.batch_size = 16
-    config.config.max_new_tokens = 8192
-    llm = AutoModelForCausalLM.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.1-GGUF", model_file="mistral-7b-instruct-v0.1.Q5_K_M.gguf", model_type="mistral", config=config)
-
-    prompt = f"<s>[INST]You are a {role} named Veronica. You will respond in a way that is most natural and relevant for a {role}, while making sure to follow any specific instructions given to you[/INST]Sure, I will now respond to the conversation as if I am a {role} and my answers will be context relevant and related to my role of being a {role}</s>[INST]{question}[/INST]"
-    response = llm(prompt)
-    print(response)
-    t = time.time() - t
-    print("Time = ", t)
-    return response
-
-
-def transcribe():
-    pass
 
 @app.route('/home', methods=['GET', 'POST'])
 def index():
@@ -86,6 +85,11 @@ def index_about():
     return render_template('about.html')
 
 if __name__ == '__main__':
+    info = audio.get_host_api_info_by_index(0)
+    numdevices = info.get('deviceCount')
+    for i in range(0, numdevices):
+        if (audio.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
+            print("Input Device id ", i, " - ", audio.get_device_info_by_host_api_device_index(0, i).get('name'))
     app.run(debug=True)
 
 

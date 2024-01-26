@@ -25,7 +25,7 @@
       </nav>
  </header>
  <a class="roles" onclick="toggleRoles()"><img src="{{ url_for('static', filename='Asset 5-8.png')}}" alt=""></a>
- <div class="text"><div class="maintext">Lorem ipsum dolor sit amet.</div></div>
+ <div class="text"><div id="response" class="maintext">Lorem ipsum dolor sit amet.</div></div>
  <div class="roles-window" id="rolesWindow">
     <div class="menu">
         <div class="item" onclick="selectRole('Professor')" ><a href="#">Professor</a></div>
@@ -95,6 +95,7 @@
                         success: function(response) {
                             $('#recordButton').text('Start Recording');
                             recording = false;
+                            $('#response').text(response.transcription)
                         }
                     });
                 }
