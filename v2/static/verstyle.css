@@ -700,7 +700,7 @@ background-color: #0E111A;
     transition:border 0.22s ease, transform 1s ease, height 1s ease,width 1s ease;
   }
   #moveButton.moved{
-    transform: translate(-1200px, +480px);
+    transform: translate(-1110px, +560px);
     height: 100px;
     width: 100px;  
   }
