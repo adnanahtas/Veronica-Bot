@@ -366,7 +366,6 @@ h2,p {
     width:70%;
 
   }
-  
   .circle {
     position: absolute;
     top: 30%;
@@ -379,4 +378,205 @@ h2,p {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+@media (min-width: 1920px) {
+  .curvedbg a
+  {
+    font-size: 36px; /* Adjust font size for larger screens if needed */
+  }
+  .logo img 
+  {
+    width: 120%; /* Adjust logo size for larger screens */
+  }
+  nav 
+  {
+    height: 100px; /* Adjust navigation bar height for larger screens */
+  }
+  .navlinks ul li 
+  {
+    padding: 20px 20px;
+    font-size: 36px; /* Increase padding for navigation links */
+  }
+  .navlinks ul li::after
+  { 
+    height: 4px;
+  }
+  .maintext 
+  {
+    position: fixed;
+    width: 85%;
+    height :65%;
+    font-size: 32px;
+    text-align: justify;
+    z-index: 2;
+    margin-left: 150px;
+    margin-right: 40px;
+    color:#ccc;
+    padding: 20px 20px;
+    overflow: auto;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.5s ease, opacity 0.5s ease; /* Adjusted bottom spacing */
+  }
+  .maintext.showtext
+  {
+    opacity: 1;
+    visibility: visible;
+  }
+  .maintext::-webkit-scrollbar {
+    width: 24px;
+  }
+  .maintext::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      padding:8px 8px;
+  }  
+  .text{
+    width: 100%;
+    height :100vh;
+    padding-top: 200px;
+  }
+
+  .roles {
+    width: 80px;
+    height: 80px;
+    margin: 120px 20px;
+  }
+
+  .roles img {
+      width: 50%; /* Adjust roles button image size for larger screens */
+  }
+
+  .settings{
+      width: 60px;
+      height: 60px;/* Adjust settings icon size for larger screens */
+  }
+
+  .settings-window {
+      width: 500px;
+      top:80px; /* Adjust settings window width for larger screens */
+  }
+
+  .settings-window .menu .item a {
+      font-size: 30px; /* Adjust font size for settings window items */
+      padding: 20px 60px; /* Adjust padding */
+  }
+
+  .settings-window .menu .censor a {
+    font-size: 30px; /* Adjust font size for settings window items */
+    padding: 20px 60px;/* Adjust padding */
+  }
+  .settings-window .menu .line{
+    height: 2px;
+  }
+  .settings-window .menu .censor .toggle-switch {
+    margin-left: auto;
+    margin-right: 20px;
+  }
+  
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height:34px;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: .4s;
+    border-radius: 24px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    height: 36px;
+    width:36px;
+    top:0;
+    left:0;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  }
+  input:checked + .slider:before {
+    transform: translateX(28px);
+  }
+
+  .menu .btn{
+    border-radius: 40px;
+    border: 4px solid #fff;
+    padding:24px 68px;
+    margin-top: 70%;
+    margin-left: 190px;
+    margin-bottom: 30px;
+    font-size: 32px;
+  }
+  .menu .btn:hover{
+    border: 4px solid #3498db;
+  }
+  .tagline {
+    top: 20%;
+    left: 50%;
+    font-size: 68px; /* Set your desired font size */
+    max-width: 100%;
+    padding: 20px 20px;
+    width:70%;
+    
+}
+.info {
+    border-radius: 20px;
+    top: 60%;
+    left: 50%;
+    font-size: 48px; /* Set your desired font size */
+    max-width: 100%;
+    width:70%;
+    padding:40px 40px;
+}
+.row{
+    margin-top: 1480px;
+    margin-bottom: 100px;
+  }
+.col1{
+    flex-basis: 25%;
+    border-radius: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    padding:20px 20px; 
+    border: 4px solid #333; 
+  }
+h2,p {
+     color: antiquewhite;
+  }
+  h2{
+    font-size: 38px;
+  }
+  p{
+    font-size: 32px;
+  }
+.team{
+    top: 1380px;
+    left: 50%;
+    font-size: 68px; /* Set your desired font size */
+    max-width: 100%;
+    padding: 20px 20px;
+    width:70%;
+
+  }
+  .circle {
+    top: 30%;
+    right: 40px; /* Adjust this value based on your design */
+    transform: translateY(-50%);
+    width:80px;
+    height: 80px;
+    border-radius: 50%;
+  }
+  .bg{
+    height: 1200px; /* Set your desired height */
+    width: 100%;
+    top: 100px;
+    left: 00;
+  }
 }
