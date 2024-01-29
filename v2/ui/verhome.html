@@ -59,6 +59,7 @@
 
 
 <script>
+    selectedRole = "";
     function toggleSettings() {
             var settingsWindow = document.getElementById('settingsWindow');
             settingsWindow.classList.toggle('show-settings');
@@ -145,6 +146,7 @@
                     $.ajax({
                         url: '/toggle-recording',
                         type: 'POST',
+                        data: {role: selectedRole},
                         success: function(response) {
                             // $('#moveButton').text('Start Recording');
                             recording = false;
