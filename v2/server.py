@@ -4,8 +4,8 @@ import time
 import whisper
 import pyaudio
 import wave
-import os
 import threading
+import pyttsx3
 
 app = Flask(__name__, template_folder="ui")
 
@@ -14,25 +14,43 @@ audio = pyaudio.PyAudio()
 stream = None
 recording = False
 frames = []
+llm = ""
 
+# def veronica_prompt(inp_role, inpt_prompt):
+#     t = time.time()
+#     role = inp_role
+#     question = inpt_prompt
 
-def veronica_prompt(inp_role, inpt_prompt):
-    t = time.time()
-    role = inp_role
-    question = inpt_prompt
+#     config = AutoConfig.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.2-GGUF")
+#     config.config.gpu_layers = 50
+#     config.config.context_length = 4096
+#     config.config.batch_size = 16
+#     config.config.max_new_tokens = 8192
+#     llm = AutoModelForCausalLM.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.2-GGUF", model_file="mistral-7b-instruct-v0.2.Q5_K_M.gguf", model_type="mistral", config=config)
 
+#     prompt = f"<s>[INST]You are a {role} named Veronica. You will respond in a way that is most natural and relevant for a {role}, while making sure to follow any specific instructions given to you[/INST]Sure, I will now respond to the conversation as if I am a {role} and my answers will be context relevant and related to my role of being a {role}</s>[INST]{question}[/INST]"
+#     response = llm(prompt)
+#     print(response)
+#     t = time.time() - t
+#     print("Time = ", t)
+#    return response
+
+def init_model():
     config = AutoConfig.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.2-GGUF")
     config.config.gpu_layers = 50
-    config.config.context_length = 4096
+    # config.config.mlock = True
+    config.config.context_length = 1024
     config.config.batch_size = 16
-    config.config.max_new_tokens = 8192
+    config.config.max_new_tokens = 1024
     llm = AutoModelForCausalLM.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.2-GGUF", model_file="mistral-7b-instruct-v0.2.Q5_K_M.gguf", model_type="mistral", config=config)
+    print("model load successful!")
+    return llm
 
-    prompt = f"<s>[INST]You are a {role} named Veronica. You will respond in a way that is most natural and relevant for a {role}, while making sure to follow any specific instructions given to you[/INST]Sure, I will now respond to the conversation as if I am a {role} and my answers will be context relevant and related to my role of being a {role}</s>[INST]{question}[/INST]"
-    response = llm(prompt)
+def generate_response(model, role = "Personal Assistant", question = "Introduce Yourself as a {role}"):
+    #model = init_model()
+    prompt = f"<s>[INST]You are a {role} named Veronica. You will respond in a way that is most natural and relevant for a {role}, and limit your response length to be 500 words at most[/INST]Sure, I will now respond to the conversation as if I am a {role} and my answers will be context relevant and related to my role of being a {role}. I will also keep the answers limited to 500 words or less</s>[INST]{question}[/INST]"
+    response = model(prompt)
     print(response)
-    t = time.time() - t
-    print("Time = ", t)
     return response
 
 
@@ -52,13 +70,19 @@ def record_audio():
 
 @app.route('/toggle-recording', methods=['POST'])
 def toggle_recording():
+    #global llm
+    dt = time.time()
     global recording
     transcription = ""
+    response = ""
     if not recording:
         recording = True
         audio_thread = threading.Thread(target=record_audio)
         audio_thread.start()
+        print("Recording Started")
     else:
+        role = request.form.get("role")
+        print(role)
         global stream, frames
         recording = False
         stream.stop_stream()
@@ -70,17 +94,24 @@ def toggle_recording():
         wf.setframerate(44100)
         wf.writeframes(b''.join(frames))
         wf.close()
+        frames = []
         model = whisper.load_model("base")
+        transcription = ""
         transcription = whisper.transcribe(model, '11audio.wav')
         print(transcription["text"])
-    response = veronica_prompt("Personal Assistant", transcription)
+        response = generate_response(llm, role, transcription["text"])
+        dt = time.time() - dt
+        print("Response Time = ",dt)
 
     return jsonify({'success': True, 'response':response})
 
 
 @app.route('/home', methods=['GET', 'POST'])
 def index():
+    global llm 
+    llm = init_model()
     return render_template('verhome.html')
+    
     
 @app.route('/about', methods=['GET'])
 def index_about():
@@ -93,5 +124,3 @@ if __name__ == '__main__':
         if (audio.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
             print("Input Device id ", i, " - ", audio.get_device_info_by_host_api_device_index(0, i).get('name'))
     app.run(debug=True)
-
-
