@@ -169,9 +169,6 @@ body, nav {
     border-radius: 10px;
     z-index: 10;
 }
-.settings-window h2 {
-    margin-bottom: 10px;
-}
 .settings-window.show-settings {
     display: block;
     opacity: 1;
@@ -222,7 +219,6 @@ body, nav {
   display: inline-block;
   width: 30px;
   height:17px;
-  
 }
 
 .toggle-switch input {
@@ -329,9 +325,7 @@ background-color: #0E111A;
     border-radius: 10px;
     z-index: 10;
 }
-.roles-window h2 {
-    margin-bottom: 10px;
-}
+
 .roles-window.show-roles {
     display: block;
     opacity: 1;
@@ -391,7 +385,7 @@ background-color: #0E111A;
     top: 50%;
     left: 40%;
     transform: translate(-50%, -50%);
-    z-index: 12;
+    z-index: 15;
 }
 
 .add-roles-window input {
@@ -496,4 +490,245 @@ background-color: #0E111A;
   color: #fff;
   padding: 0 10px;
   margin-left:60px;
+}
+
+/* Media query for 1080p screens */
+@media (min-width: 1920px) {
+  .curvedbg a
+  {
+    font-size: 36px; /* Adjust font size for larger screens if needed */
+  }
+  .logo img 
+  {
+    width: 120%; /* Adjust logo size for larger screens */
+  }
+  nav 
+  {
+    height: 100px; /* Adjust navigation bar height for larger screens */
+  }
+  .navlinks ul li 
+  {
+    padding: 20px 20px;
+    font-size: 36px; /* Increase padding for navigation links */
+  }
+  .navlinks ul li::after
+  { 
+    height: 4px;
+  }
+  .maintext 
+  {
+    position: fixed;
+    width: 85%;
+    height :65%;
+    font-size: 32px;
+    text-align: justify;
+    z-index: 2;
+    margin-left: 150px;
+    margin-right: 40px;
+    color:#ccc;
+    padding: 20px 20px;
+    overflow: auto;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.5s ease, opacity 0.5s ease; /* Adjusted bottom spacing */
+  }
+  .maintext.showtext
+  {
+    opacity: 1;
+    visibility: visible;
+  }
+  .maintext::-webkit-scrollbar {
+    width: 24px;
+  }
+  .maintext::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      padding:8px 8px;
+  }  
+  .text{
+    width: 100%;
+    height :100vh;
+    padding-top: 200px;
+  }
+
+  .roles {
+    width: 80px;
+    height: 80px;
+    margin: 120px 20px;
+  }
+
+  .roles img {
+      width: 50%; /* Adjust roles button image size for larger screens */
+  }
+
+  .settings{
+      width: 60px;
+      height: 60px;/* Adjust settings icon size for larger screens */
+  }
+
+  .settings-window {
+      width: 500px;
+      top:80px; /* Adjust settings window width for larger screens */
+  }
+
+  .settings-window .menu .item a {
+      font-size: 30px; /* Adjust font size for settings window items */
+      padding: 20px 60px; /* Adjust padding */
+  }
+
+  .settings-window .menu .censor a {
+    font-size: 30px; /* Adjust font size for settings window items */
+    padding: 20px 60px;/* Adjust padding */
+  }
+  .settings-window .menu .line{
+    height: 2px;
+  }
+  .settings-window .menu .censor .toggle-switch {
+    margin-left: auto;
+    margin-right: 20px;
+  }
+  
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height:34px;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: .4s;
+    border-radius: 24px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    height: 36px;
+    width:36px;
+    top:0;
+    left:0;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  }
+  input:checked + .slider:before {
+    transform: translateX(28px);
+  }
+  .roles-window {
+    position: fixed;
+    width : 700px;
+    height:80vh;
+    overflow-y: auto;
+    top:200px ;
+    right:0px;
+    background-color: #0A0B10;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    display: none;
+    transition: opacity 0.3s ease;
+    border-radius: 20px;
+    z-index: 10;
+  } 
+  .roles-window .menu .item a {
+    font-size: 30px; /* Adjust font size for roles window items */
+    padding: 20px 60px; /* Adjust padding */
+  }
+
+  .roles-window .menu .btn {
+      margin-top: 10%; /* Adjust margin-top for roles window button */
+      margin-left: 200px; /* Adjust margin-left for roles window button */
+  }
+
+  .add-roles-window {
+      width: 700px;
+      height:auto;
+      border-radius: 20px;
+  }
+
+  .add-roles-window input {
+      width: 80%;
+      height:60px; /* Adjust input width in add roles window */
+      margin-left: 56px;
+      font-size: 32px;
+      border-radius: 10px;
+      margin-left: 56px;
+      margin-top: 40px; /* Adjust margin-left */
+  }
+  .add-roles-window .add {
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-left: 340px;
+    margin-right: 10px;
+    margin-top:20px;
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  .add-roles-window .cancel {
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: 32px;
+  }
+  .roles-window::-webkit-scrollbar {
+    width: 24px;
+  }
+  .roles-window::-webkit-scrollbar-thumb {
+    padding:8px 8px;
+  }
+  .menu .btn{
+    border-radius: 40px;
+    border: 4px solid #fff;
+    padding:24px 68px;
+    margin-top: 70%;
+    margin-left: 190px;
+    margin-bottom: 30px;
+    font-size: 32px;
+  }
+  .menu .btn:hover{
+    border: 4px solid #3498db;
+  }
+  #moveButton{
+    width: 300px;
+    height: 300px;
+    padding: 0;
+    border:30px solid #fff;
+    transition:border 0.22s ease, transform 1s ease, height 1s ease,width 1s ease;
+  }
+  #moveButton.moved{
+    transform: translate(-1110px, +560px);
+    height: 100px;
+    width: 100px;  
+  }
+  #moveButton.stop{
+    border:10px solid #fff;
+  }
+  #moveButton.start{
+    border:30px solid #fff;
+  }
+  .textbox {
+    width: 84%;
+    left:170px;
+    height: 140px; /* Adjusted height for better visibility */
+    bottom: 40px;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.5s ease, opacity 0.5s ease; /* Adjusted bottom spacing */
+  }
+  .textbox input {
+    width: 93%;
+    height: 100%;
+    border:none;
+    font-size: 32px;
+    background-color: #0E111A;
+    border-radius: 20px;
+    border:2px solid #bbb;
+    color: #fff;
+    padding: 0 20px;
+    margin-left:120px;
+  }
 }
