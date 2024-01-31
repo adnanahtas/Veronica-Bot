@@ -17,7 +17,6 @@
              <ul>
                  <li class  = "curvedbg"><a  href="home">HOME</a></li>
                  <li class = "curvedbg"><a  href="about">ABOUT</a></li>
-                 <li class = "curvedbg" ><a onclick="bkend('this is a prompt')">Test</a></li>
                  <li><a class = "settings" onclick="toggleSettings()"><img src = "{{ url_for('static', filename='settings-8.png')}}"></a></li>
                  
                 </ul>
@@ -41,9 +40,9 @@
     <div class="menu">
         <div class="item" id="one"><a href="#">Microphone Settings</a></div>
         <div class = "line"></div>
-        <div class="censor"><a>Censorship</a> 
+        <div class="censor"><a>Uncensored</a> 
             <label class="toggle-switch">
-                <input type="checkbox" id="toggleBtn">
+                <input type="checkbox" id="toggleBtn", onclick="toggleCensor(this)">
                 <span class="slider"></span>
             </label>
         </div>
@@ -60,6 +59,7 @@
 
 <script>
     selectedRole = "";
+    currentState = false
     function toggleSettings() {
             var settingsWindow = document.getElementById('settingsWindow');
             settingsWindow.classList.toggle('show-settings');
@@ -73,6 +73,10 @@
             var rolesWindow = document.getElementById('rolesWindow');
             rolesWindow.classList.toggle('show-roles');
         }
+    function toggleCensor(checkbox) {
+    // Access the current state of the checkbox
+        currentState = checkbox.checked;
+}
     function selectRole(role) {
                 selectedRole = role;
                 toggleRoles();
@@ -131,7 +135,7 @@
     }   
     $(document).ready(function() {
             var recording = false;
-
+            var text = "";
             $('#moveButton').click(function() {
                 if (!recording) {
                     $.ajax({
@@ -146,11 +150,13 @@
                     $.ajax({
                         url: '/toggle-recording',
                         type: 'POST',
-                        data: {role: selectedRole},
+                        data: {role: selectedRole, censor: currentState},
                         success: function(response) {
                             // $('#moveButton').text('Start Recording');
                             recording = false;
-                            $('#response').text(response.transcription);
+                            text = "You: " + response.transcript + "\nVeronica: " + response.output;
+                            $('#response').css('white-space', 'pre-line').text(text);
+                            // $('#response').innerHTML = response
                         }
                     });
                 }

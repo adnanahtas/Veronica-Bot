@@ -15,6 +15,8 @@ stream = None
 recording = False
 frames = []
 llm = ""
+model = whisper.load_model("small.en")
+speech = ""
 
 # def veronica_prompt(inp_role, inpt_prompt):
 #     t = time.time()
@@ -36,23 +38,23 @@ llm = ""
 #    return response
 
 def init_model():
-    config = AutoConfig.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.2-GGUF")
+    config = AutoConfig.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.1-GGUF")
     config.config.gpu_layers = 50
     # config.config.mlock = True
     config.config.context_length = 1024
     config.config.batch_size = 16
     config.config.max_new_tokens = 1024
-    llm = AutoModelForCausalLM.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.2-GGUF", model_file="mistral-7b-instruct-v0.2.Q5_K_M.gguf", model_type="mistral", config=config)
+    llm = AutoModelForCausalLM.from_pretrained("TheBloke/Mistral-7B-Instruct-v0.1-GGUF", model_file="mistral-7b-instruct-v0.1.Q5_K_M.gguf", model_type="mistral", config=config)
     print("model load successful!")
     return llm
 
-def generate_response(model, role = "Personal Assistant", question = "Introduce Yourself as a {role}"):
-    #model = init_model()
+def generate_response(model, role = "Personal Assistant", question = "Introduce Yourself as a {role}", uncensored = False):
+
+    if(not uncensored):
+        question = "Write some prose on "+question
     prompt = f"<s>[INST]You are a {role} named Veronica. You will respond in a way that is most natural and relevant for a {role}, and limit your response length to be 500 words at most[/INST]Sure, I will now respond to the conversation as if I am a {role} and my answers will be context relevant and related to my role of being a {role}. I will also keep the answers limited to 500 words or less</s>[INST]{question}[/INST]"
     response = model(prompt)
-    print(response)
     return response
-
 
 def record_audio():
     global stream, frames
@@ -68,21 +70,39 @@ def record_audio():
         data = stream.read(CHUNK)
         frames.append(data)
 
+def speak():
+    global speech
+    engine = pyttsx3.init()
+    voice = engine.getProperty('voices')
+    engine.setProperty('voice', voice[1].id)
+    engine.say(speech)
+    engine.runAndWait()
+    del engine
+
+voiceThread = threading.Thread(target = speak)
+
 @app.route('/toggle-recording', methods=['POST'])
 def toggle_recording():
     #global llm
     dt = time.time()
-    global recording
+    global recording, model, speech, voiceThread
     transcription = ""
     response = ""
+    if (voiceThread.is_alive()):
+        del voiceThread
+    voiceThread = threading.Thread(target = speak)
+    tr = ""
     if not recording:
         recording = True
         audio_thread = threading.Thread(target=record_audio)
         audio_thread.start()
         print("Recording Started")
     else:
+        #if (engine.isBusy):
+         #   engine.stop()
+        censorToggle = request.form.get("censor")
         role = request.form.get("role")
-        print(role)
+        print("Role = ", role, "Uncensored = ", censorToggle)
         global stream, frames
         recording = False
         stream.stop_stream()
@@ -95,23 +115,24 @@ def toggle_recording():
         wf.writeframes(b''.join(frames))
         wf.close()
         frames = []
-        model = whisper.load_model("base")
         transcription = ""
         transcription = whisper.transcribe(model, '11audio.wav')
         print(transcription["text"])
-        response = generate_response(llm, role, transcription["text"])
+        tr = transcription["text"]
+        response = generate_response(llm, role, transcription["text"], censorToggle)
         dt = time.time() - dt
+        print(response)
         print("Response Time = ",dt)
-
-    return jsonify({'success': True, 'response':response})
-
+        speech = response
+        voiceThread.start()
+    return jsonify({'success': True, 'output':response,  'transcript':tr})
+    
 
 @app.route('/home', methods=['GET', 'POST'])
 def index():
     global llm 
     llm = init_model()
     return render_template('verhome.html')
-    
     
 @app.route('/about', methods=['GET'])
 def index_about():
