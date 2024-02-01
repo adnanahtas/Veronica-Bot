@@ -8,7 +8,6 @@
 </head>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='verstyle.css') }}">
 <script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" charset="UTF-8"></script>
-
 <body>
  <header>
       <nav>
@@ -60,6 +59,7 @@
 <script>
     selectedRole = "";
     currentState = false
+    var inptext = ""
     function toggleSettings() {
             var settingsWindow = document.getElementById('settingsWindow');
             settingsWindow.classList.toggle('show-settings');
@@ -110,10 +110,15 @@
     
     }
     function closeCustomRole()
-        {
-            var addRolesWindow = document.getElementById('addrolesWindow');
-            addRolesWindow.style.display = 'none';
-        }
+    {
+        var addRolesWindow = document.getElementById('addrolesWindow');
+        addRolesWindow.style.display = 'none';
+    }
+    function getText()
+    {
+        var tb = document.getElementById("textbox");
+        inptext = tb.value;
+    }
 
 
     function moveButton() {
@@ -154,7 +159,7 @@
                         success: function(response) {
                             // $('#moveButton').text('Start Recording');
                             recording = false;
-                            text = "You: " + response.transcript + "\nVeronica: " + response.output;
+                            text += "You: " + response.transcript + "\n\nVeronica: " + response.output+"\n\n\n\n";
                             $('#response').css('white-space', 'pre-line').text(text);
                             // $('#response').innerHTML = response
                         }

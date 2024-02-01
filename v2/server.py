@@ -90,6 +90,7 @@ def toggle_recording():
     response = ""
     if (voiceThread.is_alive()):
         del voiceThread
+        print("Voisss aliev")
     voiceThread = threading.Thread(target = speak)
     tr = ""
     if not recording:
