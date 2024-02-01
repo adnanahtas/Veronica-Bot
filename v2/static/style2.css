@@ -297,6 +297,9 @@ input:checked + .slider:before {
 .role :hover{
 background-color: #0E111A;
 }
+.row .col1 a{
+  color: #fff;
+}
 .head{
   color:#1189CC;
   text-align: center;
