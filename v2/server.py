@@ -17,6 +17,7 @@ frames = []
 llm = ""
 model = whisper.load_model("small.en")
 speech = ""
+micId = 1
 
 # def veronica_prompt(inp_role, inpt_prompt):
 #     t = time.time()
@@ -48,23 +49,26 @@ def init_model():
     print("model load successful!")
     return llm
 
-def generate_response(model, role = "Personal Assistant", question = "Introduce Yourself as a {role}", uncensored = False):
-
+def generate_response(model, role, question, uncensored = False):
+    if(role == ""):
+        role = "Personal Assistant"
+    if(question == ""):
+        question = "Introduce Yourself as a {role}"
     if(not uncensored):
-        question = "Write some prose on "+question
+        question = "Write some prose on: "+question
     prompt = f"<s>[INST]You are a {role} named Veronica. You will respond in a way that is most natural and relevant for a {role}, and limit your response length to be 500 words at most[/INST]Sure, I will now respond to the conversation as if I am a {role} and my answers will be context relevant and related to my role of being a {role}. I will also keep the answers limited to 500 words or less</s>[INST]{question}[/INST]"
     response = model(prompt)
     return response
 
 def record_audio():
-    global stream, frames
+    global stream, frames, micId
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
 
     stream = audio.open(format=FORMAT, channels=CHANNELS,
-                        rate=RATE, input=True,input_device_index = 1,
+                        rate=RATE, input=True,input_device_index = int(micId),
                         frames_per_buffer=CHUNK)
     while recording:
         data = stream.read(CHUNK)
@@ -128,13 +132,59 @@ def toggle_recording():
         voiceThread.start()
     return jsonify({'success': True, 'output':response,  'transcript':tr})
     
+@app.route('/gen-from-text', methods=['POST'])
+def generate_from_text():
+    global voiceThread, speech
+    if (voiceThread.is_alive()):
+        del voiceThread
+        print("Voisss aliev")
+    voiceThread = threading.Thread(target = speak)
+    dt = time.time()
+    inptext = request.form.get("textprompt")
+    role = request.form.get("role")
+    print(inptext)
+    censorToggle = request.form.get("censor")
+    response = generate_response(llm, role, inptext, censorToggle)
+    dt = time.time() - dt
+    print(response)
+    print("Response Time = ",dt)
+    speech = response
+    voiceThread.start()
+    return jsonify({'success': True, 'output':response,  'input':inptext})
+
+@app.route('/disp-mics', methods=['GET'])
+def  get_mics():
+    mic = ""
+    mics = []
+    info = audio.get_host_api_info_by_index(0)
+    numdevices = info.get('deviceCount')
+    for i in range(0, numdevices):
+        if (audio.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
+            mic = str(audio.get_device_info_by_host_api_device_index(0, i).get('name'))
+            mics.append(mic)
+    print(mics)
+    return jsonify({'success': True, 'mics': mics})
+
+@app.route('/select-mics', methods=['POST'])
+def select_mic():
+    global micId
+    micId = int(request.form.get("selMic"))
+    print("Selected Mic:  ", micId)
+    return jsonify({'success': True})
 
 @app.route('/home', methods=['GET', 'POST'])
 def index():
     global llm 
     llm = init_model()
+    # info = audio.get_host_api_info_by_index(0)
+    # mics = []
+    # numdevices = info.get('deviceCount')
+    # for i in range(0, numdevices):
+    #     if (audio.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
+    #         print("Input Device id ", i, " - ", audio.get_device_info_by_host_api_device_index(0, i).get('name'))
+    #         mics = ("Input Device id ", i, " - ", audio.get_device_info_by_host_api_device_index(0, i).get('name'))
     return render_template('verhome.html')
-    
+
 @app.route('/about', methods=['GET'])
 def index_about():
     return render_template('about.html')

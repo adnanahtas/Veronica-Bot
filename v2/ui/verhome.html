@@ -16,8 +16,7 @@
              <ul>
                  <li class  = "curvedbg"><a  href="home">HOME</a></li>
                  <li class = "curvedbg"><a  href="about">ABOUT</a></li>
-                 <li><a class = "settings" onclick="toggleSettings()"><img src = "{{ url_for('static', filename='settings-8.png')}}"></a></li>
-                 
+                 <li><a class = "settings" id = "settings" onclick="toggleSettings(); closeMic()"><img src = "{{ url_for('static', filename='settings-8.png')}}"></a></li>
                 </ul>
           </div>
       </nav>
@@ -25,7 +24,9 @@
  <a class="roles" onclick="toggleRoles()"><img src="{{ url_for('static', filename='Asset 5-8.png')}}" alt=""></a>
  <div class="text"><div id="response" class="maintext">Lorem ipsum dolor sit amet.</div></div>
  <button id="moveButton" onclick="moveButton()"></button>
- <div class="textbox"><input type="text" placeholder="Message Veronica"></div>
+ <div class="textbox"><input type="text" id="inputbox" placeholder="Message Veronica"><button class="send" id = "stopbutton" onclick="stopGeneration()"><img src="{{ url_for('static', filename='stop_1-8.png')}}" alt=""></button><button class="stop" id = "sendbutton" onclick = "sendText()"><img src="{{ url_for('static', filename='send-8.png')}}" alt=""></button></div>
+
+ 
  <div class="roles-window" id="rolesWindow">
     <div class="menu">
         <div class="item" onclick="selectRole('Professor')" ><a href="#">Professor</a></div>
@@ -37,18 +38,22 @@
  </div>
  <div class="settings-window" id="settingsWindow">
     <div class="menu">
-        <div class="item" id="one"><a href="#">Microphone Settings</a></div>
+        <div class="item" id="micpane" onclick="toggleMic(); addMicsToWindow()"><a>Microphone Settings</a></div>
         <div class = "line"></div>
-        <div class="censor"><a>Uncensored</a> 
+        <div class="censor"><a>Censorship</a> 
             <label class="toggle-switch">
-                <input type="checkbox" id="toggleBtn", onclick="toggleCensor(this)">
+                <input type="checkbox" id="toggleBtn">
                 <span class="slider"></span>
             </label>
         </div>
         <div class = "line"></div>
-        <div class="item" id="three" ><a href="#">FAQ</a></div>
     </div>
  </div>
+ <div class="mic-window" id="micWindow">
+    <div class="menu">
+    </div>
+ </div>
+ 
  <div class="add-roles-window" id="addrolesWindow">
     <input type="text" id="roleInput" placeholder="Enter role name">
     <button  class = "add" onclick="addCustomRole()">Add</button>
@@ -56,27 +61,62 @@
  </div>
 
 
-<script>
+ <script>
     selectedRole = "";
     currentState = false
     var inptext = ""
+    mics = []
+    micId = 1
     function toggleSettings() {
             var settingsWindow = document.getElementById('settingsWindow');
             settingsWindow.classList.toggle('show-settings');
-        }
+    }
+    function closeSettings() {
+        var settingsWindow = document.getElementById('settingsWindow');
+        settingsWindow.classList.remove('show-settings');
 
-        function closeSettings() {
-            var settingsWindow = document.getElementById('settingsWindow');
-            settingsWindow.classList.remove('show-settings');
-        }
+    }
     function toggleRoles() {
             var rolesWindow = document.getElementById('rolesWindow');
             rolesWindow.classList.toggle('show-roles');
-        }
+    }
     function toggleCensor(checkbox) {
     // Access the current state of the checkbox
         currentState = checkbox.checked;
-}
+    }
+    function addMicsToWindow() {
+        micIds = mics
+        var micWindow = document.getElementById('micWindow');
+        var micMenu = micWindow.querySelector('.menu');
+        console.log(micIds)
+        // Clear existing mic items
+        micMenu.innerHTML = '';
+        var i = 0;
+        //var micIds = ["Mic1", "Mic2", "Mic3"];
+        micIds.forEach(function(micId) {
+            // Create a new mic element
+            var newMic = document.createElement('div');
+            newMic.classList.add('item');
+            newMic.innerHTML = '<a href="#" id = "selectedMic" onclick="selectMic(\'' + i + '\')">' + micId + '</a>';
+            i+=1;
+            // Append the new mic to the mic window
+            micMenu.appendChild(newMic);
+        });
+    }
+    function selectMic(id)
+    {
+        console.log("HJAIMIC")
+        micId = id
+    }
+    function toggleMic() {
+        var micWindow = document.getElementById('micWindow');
+            micWindow.classList.toggle('show-mic');
+            addMicsToWindow();
+        }
+        function closeMic() {
+        var micWindow = document.getElementById('micWindow');
+            micWindow.classList.remove('show-mic');
+    }
     function selectRole(role) {
                 selectedRole = role;
                 toggleRoles();
@@ -114,10 +154,11 @@
         var addRolesWindow = document.getElementById('addrolesWindow');
         addRolesWindow.style.display = 'none';
     }
-    function getText()
+    function sendText()
     {
-        var tb = document.getElementById("textbox");
+        var tb = document.getElementById("inputbox");
         inptext = tb.value;
+        tb.value = ""
     }
 
 
@@ -139,35 +180,85 @@
         }
     }   
     $(document).ready(function() {
-            var recording = false;
-            var text = "";
-            $('#moveButton').click(function() {
-                if (!recording) {
-                    $.ajax({
-                        url: '/toggle-recording',
-                        type: 'POST',
-                        success: function(response) {
-                            // $('#moveButton').text('Stop Recording');
-                            recording = true;
-                        }
-                    });
-                } else {
-                    $.ajax({
-                        url: '/toggle-recording',
-                        type: 'POST',
-                        data: {role: selectedRole, censor: currentState},
-                        success: function(response) {
-                            // $('#moveButton').text('Start Recording');
-                            recording = false;
-                            text += "You: " + response.transcript + "\n\nVeronica: " + response.output+"\n\n\n\n";
-                            $('#response').css('white-space', 'pre-line').text(text);
-                            // $('#response').innerHTML = response
-                        }
-                    });
+    var recording = false;
+    var text = "";
+    $.ajax({
+        url: '/disp-mics',
+        type: 'GET',
+        data: {},
+        success: function(response) {
+            console.log("Hjai")
+            mics = response.mics
+            // $('#response').innerHTML = response
+        }
+    });
+
+    $(document).on('click', '#selectedMic', function() {
+        console.log("HjaiSucc");
+        $.ajax({
+            url: '/select-mics',
+            type: 'POST',
+            data: { selMic:micId },
+            success: function(response) {
+                // Handle the success response here
+            }
+        });
+    });
+
+    $('#moveButton').click(function(response) {
+        if (!recording) {
+            $.ajax({
+                url: '/toggle-recording',
+                type: 'POST',
+                success: function(response) {
+                    // $('#moveButton').text('Stop Recording');
+                    recording = true;
                 }
             });
-        });
+        } else {
+            $.ajax({
+                url: '/toggle-recording',
+                type: 'POST',
+                data: { role: selectedRole, censor: currentState },
+                success: function(response) {
+                    // $('#moveButton').text('Start Recording');
+                    recording = false;
+                    text += "You: " + response.transcript + "\n\nVeronica: " + response.output + "\n\n\n\n";
+                    $('#response').css('white-space', 'pre-line').text(text);
+                    // $('#response').innerHTML = response
+                }
+            });
+
+            $('#sendbutton').click(function() {
+                $.ajax({
+                    url: '/gen-from-text',
+                    type: 'POST',
+                    data: { role: selectedRole, censor: currentState, textprompt: inptext },
+                    success: function(response) {
+                        text += "You: " + response.input + "\n\nVeronica: " + response.output + "\n\n\n\n";
+                        $('#response').css('white-space', 'pre-line').text(text);
+                        // $('#response').innerHTML = response
+                    }
+                });
+            });
+
+        }
+        $('#selectedMic').click(function() {
+                console.log("HjaiSucc");
+                $.ajax({
+                    url: '/select-mics',
+                    type: 'POST',
+                    data: { selMic:micId },
+                    success: function(response) {
+                    }
+                });
+            });
+
+    });
+});
+
 
 </script>
 </body>
 </html>
+

@@ -498,7 +498,7 @@ background-color: #0E111A;
   border:none;
   z-index: 15;
   border:15px solid #fff;
-  transition:border 0.22s ease, transform 1s ease, height 1s ease,width 1s ease;
+  transition: border 0.22s ease, transform 1s ease, height 1s ease, width 1s ease;
 }
 
 #moveButton.moved{
@@ -508,6 +508,7 @@ background-color: #0E111A;
 }
 #moveButton.stop{
   border:5px solid #fff;
+  margin:0px 0px;
 }
 
 #moveButton.start{
@@ -792,9 +793,11 @@ background-color: #0E111A;
   }
   #moveButton.stop{
     border:10px solid #fff;
+    margin:0px 0px;
   }
   #moveButton.start{
     border:30px solid #fff;
+    
   }
   .textbox {
     width: 84%;
