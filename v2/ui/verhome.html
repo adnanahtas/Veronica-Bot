@@ -24,7 +24,7 @@
  <a class="roles" onclick="toggleRoles()"><img src="{{ url_for('static', filename='Asset 5-8.png')}}" alt=""></a>
  <div class="text"><div id="response" class="maintext">Lorem ipsum dolor sit amet.</div></div>
  <button id="moveButton" onclick="moveButton()"></button>
- <div class="textbox"><input type="text" id="inputbox" placeholder="Message Veronica"><button class="send" id = "stopbutton" onclick="stopGeneration()"><img src="{{ url_for('static', filename='stop_1-8.png')}}" alt=""></button><button class="stop" id = "sendbutton" onclick = "sendText()"><img src="{{ url_for('static', filename='send-8.png')}}" alt=""></button></div>
+ <div class="textbox"><input type="text" id="inputbox" placeholder="Message Veronica"><button class="send" id = "stopbutton"><img src="{{ url_for('static', filename='stop_1-8.png')}}" alt=""></button><button class="stop" id = "sendbutton" onclick = "sendText()"><img src="{{ url_for('static', filename='send-8.png')}}" alt=""></button></div>
 
  
  <div class="roles-window" id="rolesWindow">
@@ -40,9 +40,9 @@
     <div class="menu">
         <div class="item" id="micpane" onclick="toggleMic(); addMicsToWindow()"><a>Microphone Settings</a></div>
         <div class = "line"></div>
-        <div class="censor"><a>Censorship</a> 
+        <div class="censor"><a>Uncensored</a> 
             <label class="toggle-switch">
-                <input type="checkbox" id="toggleBtn">
+                <input type="checkbox" id="censor-toggle", onchange="toggleCensor()">
                 <span class="slider"></span>
             </label>
         </div>
@@ -63,7 +63,7 @@
 
  <script>
     selectedRole = "";
-    currentState = false
+    var currentState = 0
     var inptext = ""
     mics = []
     micId = 1
@@ -80,9 +80,16 @@
             var rolesWindow = document.getElementById('rolesWindow');
             rolesWindow.classList.toggle('show-roles');
     }
-    function toggleCensor(checkbox) {
-    // Access the current state of the checkbox
-        currentState = checkbox.checked;
+    function toggleCensor() {
+        var checkbox = document.getElementById("censor-toggle")
+        if(checkbox.checked){
+            currentState = 1
+        }
+        else
+        {
+            currentState = 0
+        }
+        console.log("Uncensored: "+currentState)
     }
     function addMicsToWindow() {
         micIds = mics
@@ -113,7 +120,7 @@
             micWindow.classList.toggle('show-mic');
             addMicsToWindow();
         }
-        function closeMic() {
+    function closeMic() {
         var micWindow = document.getElementById('micWindow');
             micWindow.classList.remove('show-mic');
     }
@@ -205,11 +212,24 @@
         });
     });
 
+    $(document).on('click', '#stopbutton', function() {
+        console.log("HjaiSucc");
+        $.ajax({
+            url: '/stop-gen',
+            type: 'POST',
+            data: {},
+            success: function(response) {
+                console.log("Stopped")
+            }
+        });
+    });
+
     $('#moveButton').click(function(response) {
         if (!recording) {
             $.ajax({
                 url: '/toggle-recording',
                 type: 'POST',
+                data: { role: selectedRole, censor: currentState },
                 success: function(response) {
                     // $('#moveButton').text('Stop Recording');
                     recording = true;
